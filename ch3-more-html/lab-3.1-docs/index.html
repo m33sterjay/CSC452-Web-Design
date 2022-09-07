@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Join a social network</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Join a social network</h1>
+    <!--<form action="https://wp.zybooks.com/form-viewer.php" enctype="multipart/form-data" method="POST"> -->
+    <form
+      action="https://wp.zybooks.com/form-viewer.php"
+      enctype="multipart/form-data"
+      method="post"
+    >
+      <!-- Full name: [text box]-->
+      <!-- <input name="fullName" id="fullName" required>-->
+      <!-- <label for="fullName">Full name:</label>-->
+      <div>
+        <label for="fullName">Full name:</label>
+        <input name="fullName" id="fullName" required />
+      </div>
+
+      <!-- Email address: [text box]-->
+      <!-- <input name="email" id="email" required>-->
+      <!-- <label for="email">Email address:</label>-->
+      <div>
+        <label for="email">Email address:</label>
+        <input name="email" id="email" required />
+      </div>
+
+      <!-- About you: [text area]-->
+      <!-- <textarea name="about" id="about" rows="3" cols="50">-->
+      <!-- <label for="about">About you:</label>-->
+      <div>
+        <label for="about">About you:</label>
+        <textarea name="about" id="about" rows="3" cols="50"></textarea>
+      </div>
+
+      <!-- Photo: [input: file]-->
+      <!-- <input type="file" name="picture" id="picture">-->
+      <!-- <label for="picture">Photo:</label>-->
+      <div>
+        <label for="picture">Photo:</label>
+        <input type="file" name="picture" id="picture" />
+      </div>
+
+      <!-- Submit: [input: submit]-->
+      <!-- <input type="submit" value="submit">-->
+      <div>
+        <input type="submit" value="Submit" />
+      </div>
+    </form>
+  </body>
+</html>
