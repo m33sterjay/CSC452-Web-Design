@@ -1,0 +1,101 @@
+.page-container {
+    display: grid;
+    grid-template-areas:
+    "a a a"
+    "b1 b2 b3"
+    "c d e";
+    justify-content: space-evenly;
+
+}
+.header {
+    /*flex-basis is same as width in function, but it adapts based on flex-direction, better to use this instead of width/height
+      flex-basis: content - wraps size of container around content
+      flex-basis: auto - sets it to the default browser value*/
+    border: 1px solid blueviolet;
+    grid-area: a;
+    text-shadow: 2px -2px 2px red;
+
+}
+.page-container{
+    border: 1px solid blueviolet;
+    box-shadow: inset 2px -2px 5px 1px plum;
+}
+#container1 {
+    border: 1px solid blueviolet;
+    grid-area: b1;
+    border-radius: 5px;
+
+}
+#container2 {
+    border: 1px solid blueviolet;
+    grid-area: b2;
+    border-radius: 10px 0px;
+}
+#container3 {
+    border: 1px solid blueviolet;
+    grid-area: b3;
+    border-radius: 10px 5px 0px;
+}
+.list {
+    border: 1px solid blueviolet;
+    grid-area: c;
+    border-radius: 15px 10px 5px 0px;
+    background: repeating-linear-gradient(to right, blue, yellow, green 25%);
+    
+}
+.table {
+    border: 1px solid blueviolet;
+    grid-area: d;
+    background: linear-gradient(red, blue);
+   
+}
+.form {
+    border: 1px solid blueviolet;
+    grid-area: e;
+    justify-content: center;
+    background: radial-gradient(farthest-side, white 50%, gray);
+
+}
+.inputs {
+    box-sizing: border-box;
+    width: 150px;
+    padding: 10px;
+    border: 1px solid blueviolet;
+    border-radius: 4px;
+    grid-area: e;
+    animation-name: inputsBackground;
+    animation-duration: 2s;
+    animation-delay: 1s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    transition: width .2s, height .2s;
+    
+}
+@keyframes inputsBackground {
+    from { background-color: blue;}
+    to { background-color: green;}
+}
+.inputs:hover {
+    width: 150px;
+    height: 50px;
+}
+.inputs[type=submit]:hover {
+    background-color: #07d;
+    cursor: pointer;
+}
+.labels {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    border: 1px solid blueviolet;
+    grid-area: e;
+    animation: labels 2s ease-in-out 1s infinite alternate forwards;
+    transition: width .2s, height .2s;
+}
+@keyframes labels {
+    0% {background-color: blueviolet;}
+    25% {background: linear-gradient(purple, gray);}
+    75% {background: repeating-linear-gradient(gray, blue, white);}
+    100% {background-color: none;}
+}
