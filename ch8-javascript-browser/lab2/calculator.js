@@ -1,5 +1,10 @@
 var scopeStatus = { Unchanged: 1.0, Changed: 1.08 };
-var attackVector = { Network: 0.85, "Adjacent Network": 0.62, Local: 0.55, Physical: 0.2 };
+var attackVector = {
+    Network: 0.85,
+    "Adjacent Network": 0.62,
+    Local: 0.55,
+    Physical: 0.2
+};
 var attackComplexity = { Low: 0.77, High: 0.44 };
 var privilegeRequired = { None: 0.85, Low: 0.62, High: 0.27 };
 var userInteraction = { None: 0.85, Required: 0.62 };
