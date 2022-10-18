@@ -1,118 +1,66 @@
-let scopeStatus = { Unchanged: 1.0, Changed: 1.08 };
-let scope;
-
-let attackVector = { Network: 0.85, "Adjacent Network": 0.62, Local: 0.55, Physical: 0.2 };
-let vector;
-
-let attackComplexity = { Low: 0.77, High: 0.44 };
-let complexity;
-
-let privilegeRequired = { None: 0.85, Low: 0.62, High: 0.27 };
-let privilege;
-
-let userInteraction = { None: 0.85, Required: 0.62 };
-let user;
-
-let sens_conf = {
-    None: {
-        None: 0.0,
-        Low: 0.22,
-        High: 0.56,
-    },
-    Low: {
-        None: 0.55,
-        Low: 0.6,
-        High: 0.75,
-    },
-    High: {
-        None: 0.0,
-        Low: 0.85,
-        High: 0.95,
-    },
+var scopeStatus = { Unchanged: 1.0, Changed: 1.08 };
+var attackVector = { Network: 0.85, "Adjacent Network": 0.62, Local: 0.55, Physical: 0.2 };
+var attackComplexity = { Low: 0.77, High: 0.44 };
+var privilegeRequired = { None: 0.85, Low: 0.62, High: 0.27 };
+var userInteraction = { None: 0.85, Required: 0.62 };
+var baseConfidentiality = {
+    None: { None: 0.0, Low: 0.22, High: 0.56 },
+    Low: { None: 0.55, Low: 0.6, High: 0.75 },
+    High: { None: 0.0, Low: 0.85, High: 0.95 },
 };
-let conf;
-let baseConfidentiality;
-
-let health_integrity = {
-    None: {
-        None: 0.0,
-        Low: 0.22,
-        High: 0.56,
-    },
-    Low: {
-        None: 0.55,
-        Low: 0.6,
-        High: 0.75,
-    },
-    High: {
-        None: 0.85,
-        Low: 0.9,
-        High: 0.95,
-    },
+var baseIntegrity = {
+    None: { None: 0.0, Low: 0.22, High: 0.56 },
+    Low: { None: 0.55, Low: 0.6, High: 0.75 },
+    High: { None: 0.85, Low: 0.9, High: 0.95 },
+};
+var baseAvailability = {
+    None: { None: 0.0, Low: 0.22, High: 0.56 },
+    Low: { None: 0.55, Low: 0.6, High: 0.65 },
+    High: { None: 0.85, Low: 0.9, High: 0.95 },
 };
 
-let baseIntegrity;
-
-let health_availability = {
-    None: {
-        None: 0.0,
-        Low: 0.22,
-        High: 0.56,
-    },
-    Low: {
-        None: 0.55,
-        Low: 0.6,
-        High: 0.65,
-    },
-    High: {
-        None: 0.85,
-        Low: 0.9,
-        High: 0.95,
-    },
-};
-
-let baseAvailability;
-
-let getButton = document.getElementsByTagName("input");
+var getButton = document.getElementsByTagName("input");
 for (const button of getButton) {
     addEventListener("click", updateScore);
-    if (button.id === "AV_N" || button.id === "AV_A" || button.id === "AV_L" || button.id === "AV_P") {
-        let buttonID = button.id;
-        let getLabel = document.getElementsByTagName("label").for;
-        if (buttonID == getLabel) {
-            vector = attackVector[getLabel.textContent];
-        }
-    } else if (button.id === "AC_L" || button.id === "AC_H") {
-        let buttonID = button.id;
-        let getLabel = document.getElementsByTagName("label").for;
-        if (buttonID == getLabel) {
-            complexity = attackComplexity[getLabel.textContent];
-        }
-    } else if (button.id === "PR_N" || button.id === "PR_L" || button.id === "PR_H") {
-        let buttonID = button.id;
-        let getLabel = document.getElementsByTagName("label").for;
-        if (buttonID == getLabel) {
-            privilege = privilegeRequired[getLabel.textContent];
-        }
-    } else if (button.id === "UI_N" || button.id === "UI_R") {
-        let buttonID = button.id;
-        let getLabel = document.getElementsByTagName("label").for;
-        if (buttonID == getLabel) {
-            user = userInteraction[getLabel.textContent];
-        }
-    } else if (button.id === "scope_U" || button.id === "scope_C") {
-        let buttonID = button.id;
-        let getLabel = document.getElementsByTagName("label").for;
-        if (buttonID == getLabel) {
-            scope = scopeStatus[getLabel.textContent];
-        }
-    } else if (button.id === "conf_N" || button.id === "conf_L" || button.id === "conf_H") {
-        let buttonID = button.id;
-        let getLabel = document.getElementsByTagName("label").for;
-        if (buttonID == getLabel) {
-            conf = getLabel.textContent;
-        } if
+}
+var avID = document.querySelector('input[name="AV"]:checked').id;
+var acID = document.querySelector('input[name="AC"]:checked').id;
+var prID = document.querySelector('input[name="PR"]:checked').id;
+var uiID = document.querySelector('input[name="UI"]:checked').id;
+var scopeID = document.querySelector('input[name="scope"]:checked').id;
+var confID = document.querySelector('input[name="conf"]:checked').id;
+var integID = document.querySelector('input[name="integ"]:checked').id;
+var availID = document.querySelector('input[name="avail"]:checked').id;
+var healthID = document.querySelector('input[name="health"]:checked').id;
+var sensID = document.querySelector('input[name="sens"]:checked').id;
+
+function updateScore(event) {
+    var scoreBase = function () {
+        return baseConfidentiality[sensID][confID] +
+            baseIntegrity[healthID][integID] +
+            baseAvailability[healthID][availID];
+    }
+    var scoreExploitability = function () {
+        return attackVector[avID] *
+            attackComplexity[acID] *
+            privilegeRequired[prID] *
+            userInteraction[uiID];
+    }
+    var scoreFinal = function () {
+        return scopeStatus[scopeID] *
+            ((3.326258289 * scoreBase) +
+                (1.1 * scoreExploitability));
+    }
+    var displayScore = Math.round(scoreFinal.toFixed(1));
+
+    var warningID = document.getElementById("warning");
+    var scoreID = document.getElementsById("score");
+    if (scoreFinal > 0) {
+        warningID.innerHTML = (
+            <div class="warning" id="warning" display="none">
+                Select values for all categories to generate a score
+            </div>
+        );
+        scoreID.textContent = displayScore;
     }
 }
-
-function updateScore(event) {}
