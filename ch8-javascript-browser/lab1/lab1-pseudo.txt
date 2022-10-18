@@ -1,0 +1,67 @@
+--- 
+
+// string of scores is given and can be changed for testing purposes
+// setTableContent receives string of scores from given function call
+    // calls parseScores to create array from string of scores
+    // hint: string method split() can create array with one line of code
+    // returns array to setTableContent
+// set calls buildDistributionArray with array created from parseScores as the argument
+    // buildDistributionArray loops through array and counts each letter grade occurrence
+    // totals stored in a separate array with the number of occurrences next to the letter grade, descending from highest letter grad
+        // ex: [# A's, # B's, # C's, # D's, #F's]
+        // ex: array should return [0, 0, 0, 0, 0] when scores array is empty
+    // returns distribution array to setTableContent
+// setTableContent produces grade distribution graph based on # of occurrences for each letter grade
+    // set each table row's *innerHTML*
+        // tables first row (id="firstRow") should use a <div> for each bar
+            // each bar gains 10px in height for each grade occurrence
+            // apply classes from embedded stylesheet so each bar is a different color
+        // tables second row contains letter grade labels
+        // tables third row contains # of occurrences for each grade
+---
+
+A program that generates a bar graph of letter grades from a distribution of scores
+
+Implement three functions: `parseScores()`, `buildDistributionArray()`, `setTableContent()`
+
+`parseScores()`:
+    A function that takes a space-separated string of scores as an argument
+    and returns an array of score strings
+    Scores are a number in the range of 0-100
+    // string method `split()` can create the array with one line of code
+
+`buildDistributionArray()`
+    A function that takes an array of scores built by `parseScores()` as an argument
+    returns a grade distribution array of length 5
+    - function should loop through scores array and tally up number of each letter grade
+    -- use standard scoring system: >90 - A, 90 > () > 80 - B, 80 > () > 70 - C, 70 > () > 60 - D, > 60 - F
+    - totals should be stored in a distribution array with - [# A's, # B's, # C's, # D's, #F's]
+    -- `buildDistributionArray()` should return [0, 0, 0, 0, 0] when scoresArray argument is an empty array
+
+`setTableContent`:
+    A function that takes a space-separated string of scores as an argument
+    Calls `parseScores()` and `buildDistributionArray()`
+    and produces a grade distribution graph    
+    - by setting the table row's inner HTML
+    Tables first row (id="firstRow"), should use a <div> for each bar.
+    - Each bar gains 10px in height per grade occurrence
+    -- apply the classes from the embedded stylesheet so that each bar is a different color
+    // CSS vertical-align property is set for <td> elements so that the bars are aligned at the bottom of the containing cells
+
+    Sample of what might be generated for table's first row:
+    <tr id="firstRow">
+    <td><div style="height:30px" class="bar0"></div></td>
+    <td><div style="height:20px" class="bar1"></div></td>
+    <td><div style="height:10px" class="bar2"></div></td>
+    <td><div style="height:0px"  class="bar3"></div></td>
+    <td><div style="height:20px" class="bar4"></div></td>
+    </tr>
+
+    table's second row contains letter grade labels
+    third row (id="thirdRow") contains the number of occurrences of each grade
+    // ex. `setTableContent("45 78 98 83 86 99 90 59") should produce table in zyBook
+
+Testing:
+    index.js calls `setTableContent()` with several different scores
+    replace scores string with other scores to verify the web page produces a table with the correct bar graph and distributions
+    EOF
