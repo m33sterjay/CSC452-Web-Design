@@ -5,6 +5,7 @@ const passwordID = document.getElementById("password"); // get id="password"
 const errorClass = document.getElementsByClassName("error");
 const passConfirmID = document.getElementById("passwordConfirm"); // get id="passwordConfirm"
 formErrorID.innerHTML = '<div id="formErrors"><ul></ul></div>';
+let passValue = passwordID.value; // Password contains >= 1 _lowercase_ && **uppercase** character, AND _digit_
 // TODO: Perform input validation
 function checkForm() {
     var passConfirmID = document.getElementById("passwordConfirm"); // get id="passwordConfirm"
@@ -12,7 +13,9 @@ function checkForm() {
         if (fullNameID.value.length < 1) {
             //alert("name !match"); //test
             fullNameID.classList.add("error"); // Full name length >= 1
-        } else;
+        } else {
+            fullNameID.classList.remove("error");
+        }
     }
     if (emailID.value != null) {
         const email_Regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
@@ -20,19 +23,27 @@ function checkForm() {
         if (!email_Regex.test(inputEmail)) {
             //alert("email !match"); //test
             emailID.classList.add("error");
-        } else;
+        } else {
+            emailID.classList.remove("error");
+        }
     } // Password length, 10 - 20 characters
     if (passwordID.value != null) {
-        var passValue = passwordID.value; // Password contains >= 1 _lowercase_ && **uppercase** character, AND _digit_
+        let passValue = passwordID.value; // Password contains >= 1 _lowercase_ && **uppercase** character, AND _digit_
         var testLower = /[a-z]/;
         var testUpper = /[A-Z]/;
         var testDigit = /[0-9]/;
         var lower = testLower.test(passValue);
         var upper = testUpper.test(passValue);
         var digit = testDigit.test(passValue);
+        var passLength = passValue.length >= 10 && passValue.length <= 20;
+        if (!passLength) {
+            passwordID.classList.add("error");
+        }
         if (!lower) {
             //alert("!match lowercase"); //test
-            passwordID.classList.add("error");
+            if (!passwordID.error) {
+                passwordID.classList.add("error");
+            } else;
         }
         if (!upper) {
             //alert("!match uppercase"); //test
@@ -46,14 +57,19 @@ function checkForm() {
                 passwordID.classList.add("error");
             } else;
         }
+        if (passLength && lower && upper && digit) {
+            passwordID.classList.remove("error");
+        }
         if (passwordID.value != null && passConfirmID.value != null) {
             if (passwordID.value !== passConfirmID.value) {
                 //alert("passConfirm !match"); //test
                 passConfirmID.classList.add("error"); // Password === confirmationPassword;
-            } else;
+            } else {
+                passConfirmID.classList.remove("error");
+            }
         } else;
     }
-    if (document.querySelectorAll('input[class="error"]') != null) {
+    if (document.querySelector('input[class="error"]') != null) {
         //alert("validation errors exist"); //test
         for (let index = 0; index < errorClass.length; index++) {
             const element = errorClass[index];
@@ -66,21 +82,21 @@ function checkForm() {
     } //alert("no validation errors present");
     else return 0;
 }
-document.getElementById("submit").addEventListener("click", function (event) { //might have to redo this
-    var validation_Errors = checkForm();
+document.getElementById("submit").addEventListener("click", function (event) {
+    //might have to redo this
+    let validation_Errors;
+    if (event) {
+        validation_Errors = checkForm();
+    }
     if (validation_Errors) {
-        if (formErrorID.hide) {
-            formErrorID.classList.remove("hide"); // Display the `formErrors` <div> by removing the `hide` class
-        } else; // no validation errors
+        formErrorID.classList.remove("hide"); // Display the `formErrors` <div> by removing the `hide` class
+        // no validation errors
     } else {
+        // no validation errors
         formErrorID.classList.add("hide"); // Hide `formErrors` <div> by adding the `hide` class
-        if (errorClass.error) {
-            errorClass.classList.remove("error"); // Remove the `error` class from all `test, email, and password` <input> elements
-        } else;
     }
     event.preventDefault(); // Prevent default form action. DO NOT REMOVE THIS LINE
 });
-
 var displayNameError = function (element) {
     if (element.id == fullNameID.id) {
         let listName = document.createElement("li");
@@ -98,14 +114,14 @@ var displayEmailError = function (element) {
     }
 };
 var displayPassError = function (element) {
-    var passValue = passwordID.value; // Password contains >= 1 _lowercase_ && **uppercase** character, AND _digit_
-    var passLength = passValue.length >= 10 && passValue.length <= 20;
+    let passCheck = passwordID.value; // Password contains >= 1 _lowercase_ && **uppercase** character, AND _digit_
+    var passLength = passCheck.length >= 10 && passCheck.length <= 20;
     var testLower = /[a-z]+/;
-    var lower = testLower.test(passValue);
+    var checkLower = testLower.test(passCheck);
     var testUpper = /[A-Z]+/;
-    var upper = testUpper.test(passValue);
+    var checkUpper = testUpper.test(passCheck);
     var testDigit = /[0-9]+/;
-    var digit = testDigit.test(passValue);
+    var checkDigit = testDigit.test(passCheck);
     if (element.id == passwordID.id) {
         if (!passLength) {
             let listPassLength = document.createElement("li");
@@ -113,19 +129,19 @@ var displayPassError = function (element) {
             listPassLength.appendChild(textPassLength);
             formErrorID.children[0].children[0].appendChild(listPassLength);
         }
-        if (!lower) {
+        if (!checkLower) {
             let listPassLower = document.createElement("li");
             let textPassLower = document.createTextNode("Password must contain at least one lowercase character.");
             listPassLower.appendChild(textPassLower);
             formErrorID.children[0].children[0].appendChild(listPassLower);
         }
-        if (!upper) {
+        if (!checkUpper) {
             let listPassUpper = document.createElement("li");
             let textPassUpper = document.createTextNode("Password must contain at least one uppercase character.");
             listPassUpper.appendChild(textPassUpper);
             formErrorID.children[0].children[0].appendChild(listPassUpper);
         }
-        if (!digit) {
+        if (!checkDigit) {
             let listPassDigit = document.createElement("li");
             let textPassDigit = document.createTextNode("Password must contain at least one digit.");
             listPassDigit.appendChild(textPassDigit);
