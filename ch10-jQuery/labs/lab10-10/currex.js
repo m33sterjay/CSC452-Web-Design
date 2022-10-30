@@ -171,7 +171,6 @@ var allCurrencies = {
     ZMW: "Zambian Kwacha",
     ZWL: "Zimbabwean Dollar",
 };
-
 // Initial data for exchange rates
 var exchangeRates = {
     disclaimer: "Usage subject to terms: https://openexchangerates.org/terms",
@@ -188,8 +187,20 @@ var exchangeRates = {
 };
 /* Your solution goes here */
 const $toCurrencyID = $('select[id="toCurrency"]');
+const $usdInputID = $('input[id="usdInput"]');
+const $resultCurrencyID = $('input[id="resultCurrency"]');
+const $resultLabelID = $('label[id="resultLabel"]');
+var $options = $("option");
+const $updateRatesID = $('button[id="updateRates"]');
+const apiKey = "1e38b730b8ee40879741630d9dc3c39a";
+const $exchangeRatesID = $('textarea[id="exchangeRates"]');
 // create 'ready' listener for <select id="toCurrency"> : $(function () {})
 $(function () {
+    readyCallback();
+    changeCallback();
+    clickCallback();
+});
+function readyCallback() {
     // add  <option value="" disabled selected>Select currency</option>
     $toCurrencyID.prepend('<option value="" disabled selected>Select currency</option>');
     // only list currencies from `exchangeRates.rates`
@@ -213,37 +224,117 @@ $(function () {
             });
         }
     }
-});
+}
 // create 'change' listener <select id="toCurrency"> : ${element}.change(function () {});
-// converts entered USD to selected currency based on rates given in _exchangeRates{}_
-// diplay converted currency w/ two decimals by updating: <input type="text" id="resultCurrency" name="resultCurrency" value="---.--" readonly>
-// update <label id="resultLabel" for="resultCurrency"></label>, to selected currencies full name: (abbrev), ex: `Canadian Dollar (CAN):`
-const $usdInputID = $('input[id="usdInput"]');
-const $resultCurrencyID = $('input[id="resultCurrency]');
-const $resultLabelID = $('label[id="resultLabel"]');
-$toCurrencyID.change(function () {
-    var $optionSelected = $("option").selectedIndex; // *** need to line selectedIndex up with exchangeRates.rates values ***
-    var usdValue;
-    var convertedUSD;
-    if ($usdInputID.value != null) {
-        usdValue = $usdInputID.value;
-    }
-    for (const currency in exchangeRates.rates) {
-        if (Object.hasOwnProperty.call(exchangeRates.rates, currency)) {
-            const conversion = exchangeRates.rates[currency];
-            if ($optionSelected.value == currency) {
-                convertedUSD = conversion * usdValue;
+function changeCallback() {
+    $toCurrencyID.change(function () {
+        const $selectedIndex = $("option:selected");
+        var $optionSelected = $selectedIndex[0];
+        if ($usdInputID[0].value != null) {
+            var usdValue = $usdInputID[0].value;
+            //alert(`${usdValue}`); //test
+        }
+        for (const currency in exchangeRates.rates) {
+            if (Object.hasOwnProperty.call(exchangeRates.rates, currency)) {
+                const conversion = exchangeRates.rates[currency];
+                if ($optionSelected.value == currency) {
+                    // converts entered USD to selected currency based on rates given in _exchangeRates{}_
+                    var convertedUSD = conversion * usdValue;
+                    //alert(`${convertedUSD}`); //test
+                }
             }
         }
-    }
-    var displayConvertedUSD = convertedUSD.toFixed(2);
-    $resultCurrencyID.value = `${displayConvertedUSD}`;
-    for (const currencyName in allCurrencies) {
-        if (Object.hasOwnProperty.call(allCurrencies, currencyName)) {
-            const fullName = allCurrencies[currencyName];
-            if ($optionSelected.value == currencyName) {
-                $resultLabelID.text(`${fullName}: (${currencyName})`);
+        var displayConvertedUSD = convertedUSD.toFixed(2); //alert(`${displayConvertedUSD}`); //test
+        $resultCurrencyID[0].value = `${displayConvertedUSD}`;
+        // diplay converted currency w/ two decimals by updating: <input type="text" id="resultCurrency" name="resultCurrency" value="---.--" readonly>
+        for (const currencyName in allCurrencies) {
+            if (Object.hasOwnProperty.call(allCurrencies, currencyName)) {
+                const fullName = allCurrencies[currencyName];
+                if ($optionSelected.value == currencyName) {
+                    // update <label id="resultLabel" for="resultCurrency"></label>, to selected currencies full name: (abbrev), ex: `Canadian Dollar (CAN):`
+                    $resultLabelID.text(`${fullName}: (${currencyName})`);
+                }
             }
         }
-    }
-});
+    });
+}
+// create 'click' listener <button id="updateRates">Update Rates</button> : ${element}.click(function () {});
+function clickCallback() {
+    $updateRatesID.click(function () {
+        let $rates = JSON.parse(
+            `{"disclaimer": "Usage subject to terms: https://openexchangerates.org/terms", "license": "https://openexchangerates.org/license", "timestamp": 1534467600, "base": "USD", "rates": { "CAD": 1.316145, "CNY": 6.882134, "EUR": 0.879303, "INR": 70.015 }}`
+        );
+        let rmOption = document.querySelectorAll(`option`);
+        for (let i = 0; i < rmOption.length; i++) {
+            rmOption[i].parentNode.removeChild(rmOption[i]);
+        }
+        // resets <option value="" disabled selected>Select currency</option> so only lists currencies from {exchangeRates.rates}
+        $toCurrencyID.prepend('<option value="" disabled selected>Select currency</option>');
+        exchangeRates = Object.assign(exchangeRates, $rates, {
+            disclaimer: $rates.disclaimer,
+            license: $rates.license,
+            timestamp: $rates.timestamp,
+            base: $rates.base,
+            rates: {
+                CAD: $rates.rates[`CAD`],
+                CNY: $rates.rates[`CNY`],
+                EUR: $rates.rates[`EUR`],
+                INR: $rates.rates[`INR`],
+            },
+        });
+        for (const currency in exchangeRates.rates) {
+            if (Object.hasOwnProperty.call(exchangeRates.rates, currency)) {
+                const conversion = exchangeRates.rates[currency];
+                // prepend currency <option>'s to 'id="toCurrency"'
+                $toCurrencyID.append(function (ratesName) {
+                    ratesName = currency;
+                    // each currency shows full currency name: `Canadian Dollar (CAD)`
+                    for (const currencyName in allCurrencies) {
+                        if (Object.hasOwnProperty.call(allCurrencies, currencyName)) {
+                            const fullName = allCurrencies[currencyName];
+                            // matching up _exchangeRate[rates]_ to _allCurrencies[currencyName]_
+                            if (ratesName == currencyName) {
+                                // value for each currency is currency abbreviation: `(CAD)`, provided in _allCurrencies{}_
+                                return `<option value="${ratesName}">${fullName} (${ratesName})</option>`;
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        // resets <input type="text" id="resultCurrency" name="resultCurrency" value="---.--" readonly>
+        $resultCurrencyID[0].value = `---.--`;
+        // resets <label id="resultLabel" for="resultCurrency">To Currency ():</label>
+        $resultLabelID.text(`To Currency ():`);
+    });
+}
+/*$.ajax({
+        // update _exchangeRates_ using JSON string in <textarea rows="5" id="exchangeRates">
+        url: `https://openexchangerates.org/api/latest.json?app_id=${apiKey}`,
+        method: "GET",
+        data: `${exchangeRates}`,
+        dataType: "json",
+    })
+        .done(function (data) {
+            exchangeRates = Object.assign(exchangeRates, data, {
+                disclaimer: data[`disclaimer`],
+                license: data[`license`],
+                timestamp: data[`timestamp`],
+                base: data[`base`],
+                rates: {
+                    BTC: data.rates[`BTC`],
+                    CAD: data.rates[`CAD`],
+                    EUR: data.rates[`EUR`],
+                    JPY: data.rates[`JPY`],
+                    USD: data.rates[`USD`],
+                },
+            });
+            $exchangeRatesID.text(JSON.stringify(exchangeRates));
+            //alert(`${exchangeRates.timestamp}`); //test
+            //alert(`${exchangeRates.rates[`BTC`]}`); //test
+        })
+        .fail(function (jqXHR) {
+            let textAreaJSON = JSON.stringify(jqXHR);
+            //alert(`fail`); //test
+            $exchangeRatesID.text(`${textAreaJSON}`);
+        });*/
